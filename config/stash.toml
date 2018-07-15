@@ -1,0 +1,11 @@
+# Object service test config
+
+debug = true
+
+[server]
+addr = "localhost"
+port = 8088
+token_duration = 3600
+
+[mysql]
+dsn = "root:000@tcp(localhost:3306)/moremom?parseTime=true"

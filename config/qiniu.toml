@@ -1,0 +1,68 @@
+
+access_key = ""
+secret_key = ""
+token_duration = 3600
+private_url_duration = 7200
+
+[domain]
+image-public = "http://img-public.moremom.cn"
+image-avatar = "http://img-avatar.moremom.cn"
+image-birth-cert = "http://img-birthcert.moremom.cn"
+image-identity = "http://img-identity.moremom.cn"
+image-vframe = "http://img-vframe.moremom.cn"
+video-origin = "http://v-origin.moremom.cn"
+video-mp4 = "http://v-mp4.moremom.cn"
+
+[category.avatar]
+bucket = "image-avatar"
+save_key = "$(endUser)/$(year)/$(mon)/$(day)/$(etag)"
+scope = "image-avatar"
+insert_only = 1
+mime_limit = "image/*"
+fsize_limit = 2097152  # 2M Bytes
+
+[category.birth]
+bucket = "image-birth-cert"
+save_key = "$(endUser)/$(year)/$(mon)/$(day)/$(etag)"
+scope = "image-birth-cert"
+insert_only = 1
+mime_limit = "image/*"
+fsize_limit = 6291456  # 6M Bytes
+fsize_min = 1024  # 1 KB
+
+[category.identity]
+bucket = "image-identity"
+save_key = "$(endUser)/$(year)/$(mon)/$(day)/$(etag)"
+scope = "image-identity"
+insert_only = 1
+mime_limit = "image/*"
+fsize_limit = 6291456  # 6M Bytes
+fsize_min = 1024  # 1 KB
+
+[category.video]
+bucket = "video-origin"
+save_key = "$(endUser)/$(year)/$(mon)/$(day)/$(etag)"
+scope = "video-origin"
+insert_only = 1
+mime_limit = "video/*"
+fsize_limit = 104857600  # 100 MB
+fsize_min = 524288  # 512 KB
+persistent_pipeline = "video-transcode"
+return_body = [
+    '"persistent_id":$(persistentId)',
+    '"duration": $(avinfo.video.duration)',
+    '"height": $(avinfo.video.height)',
+    '"width": $(avinfo.video.width)'
+]
+
+[category.video.persistent_ops]
+    [category.video.persistent_ops.transcode]
+        # http://img-public.moremom.cn/static/watermark.png aHR0cDovL2ltZy1wdWJsaWMubW9yZW1vbS5jbi9zdGF0aWMvd2F0ZXJtYXJrLnBuZw==
+        # pfop = "avthumb/mp4/vb/1.25m/wmImage/aHR0cDovL2ltZy1wdWJsaWMubW9yZW1vbS5jbi9zdGF0aWMvd2F0ZXJtYXJrLnBuZw==/wmGravity/NorthEast/wmText/${wmText}/wmFontColor/I0ZGRkZGRg==/wmFontSize/30/wmGravityText/SouthEast/wmConstant/1"
+        pfop = "avthumb/mp4/vb/1.25m"
+        save_bueket = "video-mp4"
+        save_key = "$(endUser)/$(year)/$(mon)/$(day)/$(etag)"
+    [category.video.persistent_ops.vframe]
+        pfop = "vframe/jpg/offset/1"
+        save_bueket = "image-vframe"
+        save_key = "$(endUser)/$(year)/$(mon)/$(day)/$(etag)"
